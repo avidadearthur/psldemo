@@ -245,6 +245,16 @@ files = [
 ]
 
 [[package]]
+name = "fitparse"
+version = "1.2.0"
+description = "Python library to parse ANT/Garmin .FIT files"
+optional = false
+python-versions = "*"
+files = [
+    {file = "fitparse-1.2.0.tar.gz", hash = "sha256:2d691022452dea6dabad13cc6e017ca467fe8a3a895cd3ac67a50a7bb716b4a9"},
+]
+
+[[package]]
 name = "gitdb"
 version = "4.0.11"
 description = "Git Object Database"
@@ -1178,4 +1188,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "7291eea4290d555f801c13b2ad99ce4488f3152d86830b5c73df0ab9acbcf0c0"
+content-hash = "19f1936e2878655acdd2e4dfb8c8bb5394f6c4b41bf87111515b4d13095aadb1"

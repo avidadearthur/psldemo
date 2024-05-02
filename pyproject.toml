@@ -9,6 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 streamlit = "^1.33.0"
+fitparse = "^1.2.0"
 
 
 [tool.poetry.group.dev.dependencies]
