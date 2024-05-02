@@ -33,9 +33,6 @@ def process_fit_file(file):
     return df
 
 
-
-
-
 def ingest_data(conn):
     st.write("Upload your exercising data and quickly get a shareable link with nice visualizations!")
 
