@@ -2,10 +2,15 @@ import streamlit as st
 import pandas as pd
 import io
 from fitparse import FitFile
+from connection import Connection
 
 
-def upload_to_marple(df):
+def upload_to_marple(conn, df):
     st.write("Uploading data to Marple...")
+
+    source_id = conn.upload_dataframe(df, name="exercise_data")
+
+    st.write(f"Data uploaded to Marple with source ID: {source_id}")
 
 
 def process_fit_file(file):
@@ -41,7 +46,7 @@ def semicircles_to_degrees(semicircles):
     return semicircles * (180 / (2**31))
 
 
-def ingest_data():
+def ingest_data(conn):
     st.write("Upload your exercising data and quickly get a shareable link with nice visualizations!")
 
     file = st.file_uploader("", type=["csv", "fit"])
@@ -56,10 +61,12 @@ def ingest_data():
         st.dataframe(df.head(50), use_container_width=True)
 
         if st.button("Upload to Marple"):
-            upload_to_marple(df)
+            upload_to_marple(conn, df)
 
 
 if __name__ == "__main__":
     st.set_page_config(page_title="PSL Demo", page_icon="📊", layout="wide")
     st.title("Public Share Link Demo")
-    ingest_data()
+
+    conn = Connection()
+    ingest_data(conn)
