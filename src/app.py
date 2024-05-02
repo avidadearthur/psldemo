@@ -8,10 +8,10 @@ from connection import Connection
 from utils import process_location_columns
 
 
-def upload_to_marple(conn, df):
+def get_public_share_link(conn, df, file_name):
     st.write("Uploading data to Marple...")
 
-    psl_url = conn.upload_dataframe(df, name="exercise_data")
+    psl_url = conn.create_share_link(dataframe=df, file_name=file_name)
 
     st.write(f"{psl_url}")
 
@@ -49,7 +49,7 @@ def ingest_data(conn):
         st.dataframe(df.head(50), use_container_width=True)
 
         if st.button("Upload to Marple"):
-            upload_to_marple(conn, df)
+            get_public_share_link(conn, df, file.name)
 
 
 if __name__ == "__main__":
