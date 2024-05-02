@@ -42,9 +42,9 @@ def semicircles_to_degrees(semicircles):
 
 
 def ingest_data():
-    st.write("Here you can upload your data and quickly get a shareable link with a nice plot of it!")
+    st.write("##### Upload your exercising data and quickly get a shareable link with nice visualisations!")
 
-    file = st.file_uploader("Choose a file", type=["csv", "fit"])
+    file = st.file_uploader("", type=["csv", "fit"])
 
     if file:
         if file.name.endswith(".csv"):
