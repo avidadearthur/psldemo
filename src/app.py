@@ -11,9 +11,9 @@ from utils import process_location_columns
 def upload_to_marple(conn, df):
     st.write("Uploading data to Marple...")
 
-    source_id = conn.upload_dataframe(df, name="exercise_data")
+    psl_url = conn.upload_dataframe(df, name="exercise_data")
 
-    st.write(f"Data uploaded to Marple with source ID: {source_id}")
+    st.write(f"{psl_url}")
 
 
 def process_fit_file(file):
