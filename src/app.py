@@ -1,8 +1,11 @@
-import streamlit as st
-import pandas as pd
 import io
+import pandas as pd
+import streamlit as st
+
+
 from fitparse import FitFile
 from connection import Connection
+from utils import process_location_columns
 
 
 def upload_to_marple(conn, df):
@@ -30,20 +33,7 @@ def process_fit_file(file):
     return df
 
 
-def process_location_columns(df, columns=None):
-    if columns is None:
-        columns = [c for c in df.columns if c.endswith("_lat") or c.endswith("_long")]
-    else:
-        columns = [c for c in columns if c in df.columns]
 
-    for column in columns:
-        df[column] = semicircles_to_degrees(df[column])
-
-    return df
-
-
-def semicircles_to_degrees(semicircles):
-    return semicircles * (180 / (2**31))
 
 
 def ingest_data(conn):
