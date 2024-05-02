@@ -42,7 +42,7 @@ def semicircles_to_degrees(semicircles):
 
 
 def ingest_data():
-    st.write("##### Upload your exercising data and quickly get a shareable link with nice visualisations!")
+    st.write("Upload your exercising data and quickly get a shareable link with nice visualizations!")
 
     file = st.file_uploader("", type=["csv", "fit"])
 
