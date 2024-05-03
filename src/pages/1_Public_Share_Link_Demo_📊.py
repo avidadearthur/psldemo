@@ -12,13 +12,14 @@ def get_public_share_link(conn, df, file_name):
 def ingest_data(conn):
     st.markdown(
         """
-    A public sharing link can be used to share your visualization view with people outside of your workspace,
-    or even without a Marple account.
+        A public sharing link can be used to share your visualization view with people outside of your workspace,
+        or even without a Marple account. 
+        If you want to learn more about it visit [this page](https://docs.marpledata.com/docs/sharing-and-accounts/sharing).
 
-    Upload your exercising data and quickly get a shareable link with nice visualizations!
-    """,
-        unsafe_allow_html=True,
-    )
+        Upload your exercising data and quickly get a shareable link with nice visualizations!
+        """,
+            unsafe_allow_html=True,
+        )
 
     preview_toggle = st.checkbox("Show preview")
 

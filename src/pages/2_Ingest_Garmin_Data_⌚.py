@@ -3,7 +3,14 @@ from connection import MarpleConnection, GarminConnection
 
 
 def ingest_data():
-    st.write("Link your Garmin credentials and your Marple workspace token to push activity data to Marple!")
+    st.markdown(
+        """
+        Link your Garmin credentials and your Marple workspace token to push activity data to Marple!
+
+        Your Marple Workspace Token needs to be manually generated if you don't have one, go to Settings > Tokens > Add Token. 
+        """,
+            unsafe_allow_html=True,
+        )
 
     if "garmin" not in st.session_state or "marple" not in st.session_state:
         st.session_state.garmin = None

@@ -8,8 +8,6 @@ def about():
         series data sets typically used in engineering and R&D. Think about visualizing & analyzing the data coming from your sensors,
         in a cloud platform!
         A public sharing link can be used to share your visualization view with people outside of your workspace, or even without a Marple account.
-
-        They will get a limited view of your current data
         
         This Streamlit app uses Marple's SDK to demo the Public Share Links feature on running data from Garmin watches.
         The idea is that anyone with a Garmin account can download their .fit file and, without having to create a Marple account, 
