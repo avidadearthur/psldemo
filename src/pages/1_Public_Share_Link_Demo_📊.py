@@ -1,40 +1,23 @@
 import io
 import pandas as pd
 import streamlit as st
-from fitparse import FitFile
 from connection import MarpleConnection
-from utils import process_location_columns
+from utils import process_fit_file
 
 
 def get_public_share_link(conn, df, file_name):
     return conn.create_share_link(dataframe=df, file_name=file_name)
 
 
-def process_fit_file(file):
-    fitfile = FitFile(file)
-    records = []
-
-    for record in fitfile.get_messages("record"):
-        record_data = {data.name: data.value for data in record}
-        records.append(record_data)
-
-    df = pd.DataFrame(records)
-    df = df[[col for col in df.columns if not col.startswith("unknown_")]]
-    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True).astype("int64") / 10**9
-    df = process_location_columns(df)
-    df.columns = df.columns.str.replace("_", " ", regex=False)
-    return df
-
-
 def ingest_data(conn):
     st.markdown(
-    """
+        """
     A public sharing link can be used to share your visualization view with people outside of your workspace,
     or even without a Marple account.
 
     Upload your exercising data and quickly get a shareable link with nice visualizations!
     """,
-    unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
 
     preview_toggle = st.checkbox("Show preview")
