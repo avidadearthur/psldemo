@@ -62,9 +62,12 @@ def ingest_data():
                             f"Skipped uploading the following files as they already exist: {', '.join(skipped_files)}"
                         )
                     message = f"Successfully uploaded {uploaded_count} out of {num_activities} requested activities to Marple."
-                    if uploaded_count == num_activities:
+
+                    if uploaded_count != num_activities:
+                        st.warning(message)
+                    elif uploaded_count == num_activities:
                         st.success(message)
-                    st.warning(message)
+
                 except Exception as e:
                     st.error(f"Error during activity upload: {str(e)}")
 
