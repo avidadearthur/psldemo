@@ -33,18 +33,20 @@ def ingest_data():
             if submit_button:
                 try:
                     existing_files = st.session_state.marple.get_content(path="/garmin_activities")
-                    existing_files = [file['path'].lower() for file in existing_files['message']]
-                    
+                    existing_files = [file["path"].lower() for file in existing_files["message"]]
+
                     activities_info = st.session_state.garmin.get_garmin_activities(num_activities)
+                    skipped_files = []
+                    uploaded_count = 0
 
                     for activity_id, (df, activity_type) in activities_info.items():
                         file_name = f"activity_{activity_id}_{activity_type}.csv"
                         full_path = f"garmin_activities/{file_name}".lower()
-                        
+
                         if full_path in existing_files:
-                            st.info(f"Skipping upload, file already exists: {file_name}")
+                            skipped_files.append(file_name)
                             continue
-                        
+
                         metadata = {"activity_id": activity_id, "activity_type": activity_type}
                         upload_message = st.empty()
                         upload_message.write("Uploading data to Marple...")
@@ -53,8 +55,16 @@ def ingest_data():
                         )
                         upload_message.write(f"Uploaded {source_id} successfully.")
                         upload_message.empty()
+                        uploaded_count += 1
 
-                    st.success(f"Successfully uploaded {num_activities} activities to Marple.")
+                    if skipped_files:
+                        st.info(
+                            f"Skipped uploading the following files as they already exist: {', '.join(skipped_files)}"
+                        )
+                    message = f"Successfully uploaded {uploaded_count} out of {num_activities} requested activities to Marple."
+                    if uploaded_count == num_activities:
+                        st.success(message)
+                    st.warning(message)
                 except Exception as e:
                     st.error(f"Error during activity upload: {str(e)}")
 
