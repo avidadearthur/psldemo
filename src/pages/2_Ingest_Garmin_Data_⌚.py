@@ -32,16 +32,15 @@ def ingest_data():
 
             if submit_button:
                 try:
-                    activities_dict = st.session_state.garmin.get_garmin_activities(num_activities)
-                    assert len(activities_dict.items()) == num_activities
+                    activities_info = st.session_state.garmin.get_garmin_activities(num_activities)
 
-                    for activity_id, df in activities_dict.items():
-                        file_name = f"activity_{activity_id}.csv"
-                        metadata = {"activity_id": activity_id}
+                    for activity_id, (df, activity_type) in activities_info.items():
+                        file_name = f"activity_{activity_id}_{activity_type}.csv"
+                        metadata = {"activity_id": activity_id, "activity_type": activity_type}
                         upload_message = st.empty()
                         upload_message.write("Uploading data to Marple...")
                         source_id = st.session_state.marple.upload_dataframe(
-                            df, file_name, marple_folder="/garmin_activities", metadata=metadata
+                            df, file_name, "/garmin_activities", metadata
                         )
                         upload_message.write(f"Uploaded {source_id} successfully.")
                         upload_message.empty()

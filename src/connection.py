@@ -26,12 +26,14 @@ class GarminConnection:
             raise ConnectionError("Could not connect to Garmin Connect")
 
     def get_garmin_activities(self, amount):
+        activities_dict = {}
         try:
             activities = self.client.get_activities(0, amount)
             activities_dict = {}
 
             for activity in activities:
                 activity_id = activity["activityId"]
+                activity_type = activity["activityType"]["typeKey"]
                 fit_data = self.client.download_activity(activity_id, dl_fmt=Garmin.ActivityDownloadFormat.ORIGINAL)
 
                 with tempfile.TemporaryDirectory() as temp_dir:
@@ -45,15 +47,12 @@ class GarminConnection:
                         zip_ref.extractall(temp_dir)
 
                     if os.path.exists(fit_path):
-                        activities_dict[activity_id] = process_fit_file(fit_path)
-                    else:
-                        print(f"Expected FIT file not found: {fit_path}")
-
-            return activities_dict
+                        df = process_fit_file(fit_path)
+                        activities_dict[activity_id] = (df, activity_type)
 
         except Exception as e:
             print(f"Error fetching activities: {e}")
-            return {}
+        return activities_dict
 
 
 class MarpleConnection:
