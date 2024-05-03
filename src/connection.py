@@ -62,6 +62,15 @@ class MarpleConnection:
         self.m = Marple(access_token=self.token, api_url=self.base_url)
         self.m.check_connection()
 
+    def get_content(self, path="/garmin_activities"):
+        endpoint = "/library/folder/contents"
+        auth_header = {"Authorization": f"Bearer {self.token}"}
+        params = {"path": path}
+
+        response = requests.get(f"{self.base_url}{endpoint}", headers=auth_header, params=params)
+
+        return response.json()
+
     def upload_dataframe(self, dataframe, file_name, marple_folder="/", metadata={}):
         dataframe.to_csv(file_name, sep=",", index=False)
         source_id = self.m.upload_data_file(file_name, marple_folder, metadata=metadata)

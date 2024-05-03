@@ -32,10 +32,19 @@ def ingest_data():
 
             if submit_button:
                 try:
+                    existing_files = st.session_state.marple.get_content(path="/garmin_activities")
+                    existing_files = [file['path'].lower() for file in existing_files['message']]
+                    
                     activities_info = st.session_state.garmin.get_garmin_activities(num_activities)
 
                     for activity_id, (df, activity_type) in activities_info.items():
                         file_name = f"activity_{activity_id}_{activity_type}.csv"
+                        full_path = f"garmin_activities/{file_name}".lower()
+                        
+                        if full_path in existing_files:
+                            st.info(f"Skipping upload, file already exists: {file_name}")
+                            continue
+                        
                         metadata = {"activity_id": activity_id, "activity_type": activity_type}
                         upload_message = st.empty()
                         upload_message.write("Uploading data to Marple...")
