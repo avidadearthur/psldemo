@@ -1,9 +1,17 @@
 import os
 import requests
+import pandas as pd
 import streamlit as st
+import zipfile
+import tempfile
 
 from marple import Marple
-from garminconnect import Garmin, GarminConnectConnectionError, GarminConnectTooManyRequestsError
+from utils import process_fit_file
+from garminconnect import (
+    Garmin,
+    GarminConnectConnectionError,
+    GarminConnectTooManyRequestsError,
+)
 
 
 class GarminConnection:
@@ -11,13 +19,45 @@ class GarminConnection:
         self.username = username
         self.password = password
 
-        self.client = Garmin(self.username, self.password)
-        self.client.login()
+        try:
+            self.client = Garmin(self.username, self.password)
+            self.client.login()
+        except (GarminConnectConnectionError, GarminConnectTooManyRequestsError) as e:
+            print(f"Failed to connect to Garmin: {e}")
+            raise ConnectionError("Could not connect to Garmin Connect")
+
+    def get_garmin_activities(self, amount):
+        try:
+            activities = self.client.get_activities(0, amount)
+            activities_dict = {}
+
+            for activity in activities:
+                activity_id = activity["activityId"]
+                fit_data = self.client.download_activity(activity_id, dl_fmt=Garmin.ActivityDownloadFormat.ORIGINAL)
+
+                with tempfile.TemporaryDirectory() as temp_dir:
+                    zip_path = os.path.join(temp_dir, f"{activity_id}.zip")
+                    fit_path = os.path.join(temp_dir, f"{activity_id}.fit")
+
+                    with open(zip_path, "wb") as file:
+                        file.write(fit_data)
+
+                    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+                        zip_ref.extractall(temp_dir)
+
+                    if os.path.exists(fit_path):
+                        activities_dict[activity_id] = process_fit_file(fit_path)
+
+            return activities_dict
+
+        except Exception as e:
+            print(f"Error fetching activities: {e}")
+            return {}
 
 
 class MarpleConnection:
-    def __init__(self):
-        self.token = st.secrets["ACCESS_TOKEN"]
+    def __init__(self, token=None):
+        self.token = st.secrets["ACCESS_TOKEN"] if not token else token
         self.base_url = st.secrets["API_URL"]
         self.m = Marple(access_token=self.token, api_url=self.base_url)
         self.m.check_connection()
