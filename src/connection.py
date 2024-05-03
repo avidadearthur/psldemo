@@ -1,6 +1,5 @@
 import os
 import requests
-import pandas as pd
 import streamlit as st
 import zipfile
 import tempfile
@@ -37,7 +36,7 @@ class GarminConnection:
 
                 with tempfile.TemporaryDirectory() as temp_dir:
                     zip_path = os.path.join(temp_dir, f"{activity_id}.zip")
-                    fit_path = os.path.join(temp_dir, f"{activity_id}.fit")
+                    fit_path = os.path.join(temp_dir, f"{activity_id}_ACTIVITY.fit")
 
                     with open(zip_path, "wb") as file:
                         file.write(fit_data)
@@ -47,6 +46,8 @@ class GarminConnection:
 
                     if os.path.exists(fit_path):
                         activities_dict[activity_id] = process_fit_file(fit_path)
+                    else:
+                        print(f"Expected FIT file not found: {fit_path}")
 
             return activities_dict
 

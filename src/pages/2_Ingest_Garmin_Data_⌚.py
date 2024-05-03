@@ -5,34 +5,54 @@ from connection import MarpleConnection, GarminConnection
 def ingest_data():
     st.write("Link your Garmin credentials and your Marple workspace token to push activity data to Marple!")
 
+    if "garmin" not in st.session_state or "marple" not in st.session_state:
+        st.session_state.garmin = None
+        st.session_state.marple = None
+
     with st.expander("Garmin and Marple Settings"):
-        garmin_username = st.text_input("Garmin Username")
-        garmin_password = st.text_input("Garmin Password", type="password")
-        marple_token = st.text_input("Marple Workspace Token")
+        garmin_username = st.text_input("Garmin Username", key="garmin_username")
+        garmin_password = st.text_input("Garmin Password", type="password", key="garmin_password")
+        marple_token = st.text_input("Marple Workspace Token", key="marple_token")
 
         link_button = st.button("Link")
 
         if link_button:
             try:
-                garmin = GarminConnection(garmin_username, garmin_password)
-                marple = MarpleConnection(marple_token)
+                st.session_state.garmin = GarminConnection(garmin_username, garmin_password)
+                st.session_state.marple = MarpleConnection(marple_token)
                 st.success("Successfully linked Garmin and Marple accounts!")
-                link_button = False
             except Exception as e:
                 st.error(f"Failed to link accounts: {str(e)}")
+                return  # Exit if unable to link accounts
 
-    with st.form(key="num_activities"):
-        num_activities = st.number_input("Enter the number of activities to upload:", min_value=1, value=5)
-        submit_button = st.form_submit_button(label="Send to Marple")
+    if st.session_state.garmin and st.session_state.marple:
+        with st.form(key="num_activities"):
+            num_activities = st.number_input("Enter the number of activities to upload:", min_value=1, value=5)
+            submit_button = st.form_submit_button(label="Send to Marple")
 
-        if submit_button:
-            # This is a placeholder for actual activity uploading
-            st.success(f"Successfully scheduled upload of {num_activities} activities to Marple.")
+            if submit_button:
+                try:
+                    activities_dict = st.session_state.garmin.get_garmin_activities(num_activities)
+                    assert len(activities_dict.items()) == num_activities
+
+                    for activity_id, df in activities_dict.items():
+                        file_name = f"activity_{activity_id}.csv"
+                        metadata = {"activity_id": activity_id}
+                        upload_message = st.empty()
+                        upload_message.write("Uploading data to Marple...")
+                        source_id = st.session_state.marple.upload_dataframe(
+                            df, file_name, marple_folder="/garmin_activities", metadata=metadata
+                        )
+                        upload_message.write(f"Uploaded {source_id} successfully.")
+                        upload_message.empty()
+
+                    st.success(f"Successfully uploaded {num_activities} activities to Marple.")
+                except Exception as e:
+                    st.error(f"Error during activity upload: {str(e)}")
 
 
 if __name__ == "__main__":
     st.set_page_config(page_title="Ingest Garmin Data", page_icon="⌚", layout="wide")
     st.title("Ingest Garmin Data")
 
-    conn = MarpleConnection()
     ingest_data()
