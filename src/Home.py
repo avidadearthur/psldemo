@@ -1,5 +1,6 @@
 import streamlit as st
 
+
 def about():
     st.markdown(
         """
@@ -21,8 +22,9 @@ def about():
         
         Arthur
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True,
     )
+
 
 if __name__ == "__main__":
     st.set_page_config(page_title="Home", page_icon="🏠", layout="wide")
