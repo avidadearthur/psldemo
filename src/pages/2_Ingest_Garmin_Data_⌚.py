@@ -23,7 +23,7 @@ def ingest_data():
                 st.success("Successfully linked Garmin and Marple accounts!")
             except Exception as e:
                 st.error(f"Failed to link accounts: {str(e)}")
-                return  # Exit if unable to link accounts
+                return
 
     if st.session_state.garmin and st.session_state.marple:
         with st.form(key="num_activities"):
