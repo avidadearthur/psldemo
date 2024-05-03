@@ -4,7 +4,7 @@ import streamlit as st
 from marple import Marple
 
 
-class Connection:
+class MarpleConnection:
     def __init__(self):
         self.token = st.secrets["ACCESS_TOKEN"]
         self.base_url = st.secrets["API_URL"]
