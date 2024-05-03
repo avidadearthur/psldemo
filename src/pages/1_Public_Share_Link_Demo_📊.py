@@ -27,7 +27,15 @@ def process_fit_file(file):
 
 
 def ingest_data(conn):
-    st.write("Upload your exercising data and quickly get a shareable link with nice visualizations!")
+    st.markdown(
+    """
+    A public sharing link can be used to share your visualization view with people outside of your workspace,
+    or even without a Marple account.
+
+    Upload your exercising data and quickly get a shareable link with nice visualizations!
+    """,
+    unsafe_allow_html=True
+    )
 
     preview_toggle = st.checkbox("Show preview")
 

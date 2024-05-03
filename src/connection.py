@@ -1,7 +1,18 @@
 import os
 import requests
 import streamlit as st
+
 from marple import Marple
+from garminconnect import Garmin, GarminConnectConnectionError, GarminConnectTooManyRequestsError
+
+
+class GarminConnection:
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+        self.client = Garmin(self.username, self.password)
+        self.client.login()
 
 
 class MarpleConnection:
