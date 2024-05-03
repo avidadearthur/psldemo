@@ -5,11 +5,10 @@ from fitparse import FitFile
 from connection import Connection
 from utils import process_location_columns
 
-def get_public_share_link(conn, df, file_name):
-    st.write("Uploading data to Marple...")
 
-    psl_url = conn.create_share_link(dataframe=df, file_name=file_name)
-    st.write(f"{psl_url}")
+def get_public_share_link(conn, df, file_name):
+    return conn.create_share_link(dataframe=df, file_name=file_name)
+
 
 def process_fit_file(file):
     fitfile = FitFile(file)
@@ -26,10 +25,11 @@ def process_fit_file(file):
     df.columns = df.columns.str.replace("_", " ", regex=False)
     return df
 
+
 def ingest_data(conn):
     st.write("Upload your exercising data and quickly get a shareable link with nice visualizations!")
 
-    preview_toggle = st.checkbox("Show data preview")
+    preview_toggle = st.checkbox("Show preview")
 
     file = st.file_uploader("Add your file here", type=["csv", "fit"])
 
@@ -43,7 +43,14 @@ def ingest_data(conn):
             st.dataframe(df.head(50), use_container_width=True)
 
         if st.button("Upload to Marple"):
-            get_public_share_link(conn, df, file.name)
+            upload_message = st.empty()
+            upload_message.write("Uploading data to Marple...")
+
+            psl_url = get_public_share_link(conn, df, file.name)
+
+            upload_message.empty()
+            st.write(f"Here's your PSL: {psl_url}")
+
 
 if __name__ == "__main__":
     st.set_page_config(page_title="PSL Demo", page_icon="📊", layout="wide")
